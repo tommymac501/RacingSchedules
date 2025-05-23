@@ -261,40 +261,37 @@ export async function fetchF1SeriesRaces(): Promise<InsertRace[]> {
       throw new Error('Invalid F1 data structure from SportsRadar');
     }
 
-    const races: InsertRace[] = data.stages.map((stage: any) => {
-      const venue = stage.venue;
-      const startTime = stage.start_time ? new Date(stage.start_time) : new Date();
-      
-      // Generate race name from venue if not provided
-      let raceName = stage.name;
-      if (!raceName && venue?.name) {
-        raceName = venue.name.includes('Grand Prix') 
-          ? venue.name 
-          : `${venue.city_name || venue.name} Grand Prix`;
-      }
-      
-      const race: InsertRace = {
-        seriesId: 'f1',
-        name: raceName || 'Formula 1 Grand Prix',
-        location: venue ? `${venue.name}, ${venue.city_name}, ${venue.country_name}` : 'TBD',
-        coords: venue && venue.coordinates ? `${venue.coordinates.latitude},${venue.coordinates.longitude}` : null,
-        weather: null,
-        date: startTime.toISOString().split('T')[0],
-        time: startTime.toLocaleTimeString('en-US', { 
-          timeZone: 'America/New_York',
-          hour: 'numeric',
-          minute: '2-digit',
-          timeZoneName: 'short'
-        }),
-        channel: 'ESPN',
-        practiceTimes: null,
-        qualifyingTimes: null,
-        seriesName: 'Formula 1',
-        headerClass: 'f1-header'
-      };
-      
-      return race;
-    });
+    const races: InsertRace[] = data.stages
+      .filter((stage: any) => stage.description && stage.description.includes('Grand Prix'))
+      .map((stage: any) => {
+        const venue = stage.venue;
+        const scheduledTime = new Date(stage.scheduled);
+        
+        // SportsRadar F1 API doesn't provide weather or temperature data
+        // Set to null so the UI handles it appropriately
+
+        const race: InsertRace = {
+          seriesId: 'f1',
+          name: stage.description || 'Formula 1 Grand Prix',
+          location: venue?.name || 'TBD',
+          coords: venue && venue.coordinates ? `${venue.coordinates.latitude},${venue.coordinates.longitude}` : null,
+          weather: null,
+          date: scheduledTime.toISOString().split('T')[0],
+          time: scheduledTime.toLocaleTimeString('en-US', { 
+            timeZone: 'America/New_York',
+            hour: 'numeric',
+            minute: '2-digit',
+            timeZoneName: 'short'
+          }),
+          channel: null, // SportsRadar doesn't provide broadcast info for F1
+          practiceTimes: null,
+          qualifyingTimes: null,
+          seriesName: 'Formula 1',
+          headerClass: 'f1-header'
+        };
+        
+        return race;
+      });
 
     console.log(`Successfully fetched ${races.length} F1 races from SportsRadar`);
     return races;
