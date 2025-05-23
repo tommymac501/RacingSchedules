@@ -1,0 +1,109 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 20 14.3% 4.1%;
+  --primary: 359 96% 44%; /* #e10600 */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 4% 12%; /* #1e2022 */
+  --secondary-foreground: 0 0% 100%;
+  --accent: 196 100% 45%; /* #00a6ed */
+  --accent-foreground: 0 0% 100%;
+  --light: 210 17% 98%; /* #f8f9fa */
+  --dark: 210 10% 15%; /* #212529 */
+  --success: 134 51% 40%; /* #28a745 */
+  --nascar: 47 100% 67%; /* #ffd659 */
+  --indycar: 196 100% 45%; /* #00a6ed */
+  --f1: 359 96% 44%; /* #e10600 */
+  --outlaws: 0 0% 10%; /* #1a1a1a */
+  --muted: 60 4.8% 95.9%;
+  --muted-foreground: 25 5.3% 44.7%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 20 14.3% 4.1%;
+  --card: 0 0% 100%;
+  --card-foreground: 20 14.3% 4.1%;
+  --border: 20 5.9% 90%;
+  --input: 20 5.9% 90%;
+  --ring: 359 96% 44%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 60 9.1% 97.8%;
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --primary: 359 96% 44%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 4% 12%;
+  --secondary-foreground: 0 0% 100%;
+  --accent: 196 100% 45%;
+  --accent-foreground: 0 0% 100%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --ring: 359 96% 44%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-gray-50 text-gray-900;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold;
+  }
+}
+
+@layer components {
+  .nascar-header {
+    @apply bg-[#ffd659] text-black;
+  }
+  
+  .indycar-header {
+    @apply bg-[#00a6ed] text-white;
+  }
+  
+  .f1-header {
+    @apply bg-[#e10600] text-white;
+  }
+  
+  .outlaws-header {
+    @apply bg-[#1a1a1a] text-white;
+  }
+  
+  .container-racing {
+    @apply container mx-auto max-w-6xl px-4;
+  }
+  
+  .series-badge {
+    @apply absolute top-3 right-3 text-xs font-semibold py-1 px-3 rounded-full;
+  }
+  
+  .nascar-badge {
+    @apply bg-[#ffd659] text-black;
+  }
+  
+  .indycar-badge {
+    @apply bg-[#00a6ed] text-white;
+  }
+  
+  .f1-badge {
+    @apply bg-[#e10600] text-white;
+  }
+  
+  .outlaws-badge {
+    @apply bg-[#1a1a1a] text-white;
+  }
+}

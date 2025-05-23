@@ -1,0 +1,289 @@
+// Global variables
+const API_KEY = "xai-cPmFr2q8eiK8KoU7C39ZPcYTGFSntUttUWaksU0DHiuxHp7xhw1O7gzHkMjh5UdH9yxRZIvsVRQL1Ev1";
+const DateTime = luxon.DateTime;
+let currentSeries = '';
+let isWeeklyView = false;
+
+// DOM Elements
+const seriesGrid = document.getElementById('seriesGrid');
+const raceSchedule = document.getElementById('raceSchedule');
+const scheduleContent = document.getElementById('scheduleContent');
+const scheduleTitle = document.getElementById('scheduleTitle');
+const backButton = document.getElementById('backButton');
+const homeLink = document.getElementById('homeLink');
+const thisWeekLink = document.getElementById('thisWeekLink');
+
+// Map series IDs to full names and color classes
+const seriesMap = {
+    'nascar-cup': {
+        name: 'NASCAR Cup Series',
+        headerClass: 'nascar-header',
+        color: 'var(--nascar-color)'
+    },
+    'nascar-xfinity': {
+        name: 'NASCAR Xfinity Series',
+        headerClass: 'nascar-header',
+        color: 'var(--nascar-color)'
+    },
+    'nascar-truck': {
+        name: 'NASCAR Truck Series',
+        headerClass: 'nascar-header',
+        color: 'var(--nascar-color)'
+    },
+    'arca': {
+        name: 'ARCA Menards Series',
+        headerClass: 'nascar-header',
+        color: 'var(--nascar-color)'
+    },
+    'indycar': {
+        name: 'IndyCar Series',
+        headerClass: 'indycar-header',
+        color: 'var(--indycar-color)'
+    },
+    'f1': {
+        name: 'Formula 1',
+        headerClass: 'f1-header',
+        color: 'var(--f1-color)'
+    },
+    'world-of-outlaws': {
+        name: 'World of Outlaws',
+        headerClass: 'outlaws-header',
+        color: 'var(--outlaws-color)'
+    }
+};
+
+// Event Listeners
+document.addEventListener('DOMContentLoaded', () => {
+    // Series card click events
+    const seriesCards = document.querySelectorAll('.series-card');
+    seriesCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const seriesId = card.dataset.series;
+            fetchRaceSchedule(seriesId, false);
+        });
+    });
+    
+    // Back button event
+    backButton.addEventListener('click', () => {
+        showSeriesGrid();
+    });
+    
+    // Home link event
+    homeLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        showSeriesGrid();
+    });
+    
+    // This Week link event
+    thisWeekLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        fetchThisWeekRaces();
+    });
+});
+
+// Show series grid and hide schedule
+function showSeriesGrid() {
+    seriesGrid.parentElement.parentElement.style.display = 'block';
+    raceSchedule.style.display = 'none';
+}
+
+// Show schedule and hide series grid
+function showSchedule() {
+    seriesGrid.parentElement.parentElement.style.display = 'none';
+    raceSchedule.style.display = 'block';
+}
+
+/**
+ * Fetch race data from API
+ * In a real implementation, this would call the xAI API with the provided key
+ */
+async function fetchRaceData(series, thisWeekOnly = false) {
+    try {
+        // This is where you would make an actual API call to your AI backend
+        // For now, we'll simulate a response with mock data
+        
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // Current date for comparison
+        const now = DateTime.now();
+        
+        // Mock race data
+        const allRaces = {
+            'nascar-cup': [
+                {
+                    name: "Coca-Cola 600",
+                    location: "Charlotte Motor Speedway, North Carolina",
+                    coords: "35.3522,-80.6831",
+                    weather: "Partly cloudy, 75°F",
+                    date: now.plus({days: 5}).toFormat("yyyy-MM-dd"),
+                    time: "6:00 PM ET",
+                    channel: "FOX"
+                },
+                {
+                    name: "Enjoy Illinois 300",
+                    location: "World Wide Technology Raceway, Madison, IL",
+                    coords: "38.6506,-90.1367",
+                    weather: "Sunny, 82°F",
+                    date: now.plus({days: 12}).toFormat("yyyy-MM-dd"),
+                    time: "3:30 PM ET",
+                    channel: "FS1"
+                },
+                {
+                    name: "Toyota/Save Mart 350",
+                    location: "Sonoma Raceway, California",
+                    coords: "38.1610,-122.4547",
+                    weather: "Clear, 68°F",
+                    date: now.plus({days: 19}).toFormat("yyyy-MM-dd"),
+                    time: "4:00 PM ET",
+                    channel: "FOX"
+                }
+            ],
+            'nascar-xfinity': [
+                {
+                    name: "Alsco Uniforms 300",
+                    location: "Charlotte Motor Speedway, North Carolina",
+                    coords: "35.3522,-80.6831",
+                    weather: "Scattered clouds, 73°F",
+                    date: now.plus({days: 4}).toFormat("yyyy-MM-dd"),
+                    time: "1:00 PM ET",
+                    channel: "FS1"
+                },
+                {
+                    name: "Pacific Office Automation 147",
+                    location: "Portland International Raceway, Oregon",
+                    coords: "45.5967,-122.6874",
+                    weather: "Light rain, 62°F",
+                    date: now.plus({days: 11}).toFormat("yyyy-MM-dd"),
+                    time: "4:30 PM ET",
+                    channel: "FS1"
+                }
+            ],
+            'nascar-truck': [
+                {
+                    name: "North Carolina Education Lottery 200",
+                    location: "Charlotte Motor Speedway, North Carolina",
+                    coords: "35.3522,-80.6831",
+                    weather: "Clear, 70°F",
+                    date: now.plus({days: 3}).toFormat("yyyy-MM-dd"),
+                    time: "8:30 PM ET",
+                    channel: "FS1"
+                },
+                {
+                    name: "Toyota 200",
+                    location: "World Wide Technology Raceway, Madison, IL",
+                    coords: "38.6506,-90.1367",
+                    weather: "Partly cloudy, 80°F",
+                    date: now.plus({days: 11}).toFormat("yyyy-MM-dd"),
+                    time: "1:30 PM ET",
+                    channel: "FS1"
+                }
+            ],
+            'arca': [
+                {
+                    name: "General Tire 150",
+                    location: "Charlotte Motor Speedway, North Carolina",
+                    coords: "35.3522,-80.6831",
+                    weather: "Clear, 68°F",
+                    date: now.plus({days: 3}).toFormat("yyyy-MM-dd"),
+                    time: "6:00 PM ET",
+                    channel: "FS1"
+                },
+                {
+                    name: "Dutch Boy 150",
+                    location: "Illinois State Fairgrounds, Springfield, IL",
+                    coords: "39.8275,-89.6442",
+                    weather: "Sunny, 79°F",
+                    date: now.plus({days: 26}).toFormat("yyyy-MM-dd"),
+                    time: "2:00 PM ET",
+                    channel: "FS1"
+                }
+            ],
+            'indycar': [
+                {
+                    name: "107th Indianapolis 500",
+                    location: "Indianapolis Motor Speedway, Indiana",
+                    coords: "39.7903,-86.2394",
+                    weather: "Partly cloudy, 77°F",
+                    date: now.plus({days: 4}).toFormat("yyyy-MM-dd"),
+                    time: "12:45 PM ET",
+                    channel: "NBC"
+                },
+                {
+                    name: "Detroit Grand Prix",
+                    location: "Detroit Street Circuit, Michigan",
+                    coords: "42.3314,-83.0458",
+                    weather: "Sunny, 75°F",
+                    date: now.plus({days: 11}).toFormat("yyyy-MM-dd"),
+                    time: "3:00 PM ET",
+                    channel: "USA Network"
+                }
+            ],
+            'f1': [
+                {
+                    name: "Monaco Grand Prix",
+                    location: "Circuit de Monaco, Monte Carlo",
+                    coords: "43.7347,7.4206",
+                    weather: "Clear, 70°F",
+                    date: now.plus({days: 4}).toFormat("yyyy-MM-dd"),
+                    time: "9:00 AM ET",
+                    channel: "ESPN"
+                },
+                {
+                    name: "Canadian Grand Prix",
+                    location: "Circuit Gilles Villeneuve, Montreal",
+                    coords: "45.5017,-73.5291",
+                    weather: "Cloudy, 65°F",
+                    date: now.plus({days: 18}).toFormat("yyyy-MM-dd"),
+                    time: "2:00 PM ET",
+                    channel: "ABC"
+                }
+            ],
+            'world-of-outlaws': [
+                {
+                    name: "World of Outlaws at Atomic Speedway",
+                    location: "Atomic Speedway, Chillicothe, OH",
+                    coords: "39.1836,-83.0029",
+                    weather: "Clear, 72°F",
+                    date: now.plus({days: 3}).toFormat("yyyy-MM-dd"),
+                    time: "7:00 PM ET",
+                    channel: "DIRTVision"
+                },
+                {
+                    name: "World of Outlaws at Eldora Speedway",
+                    location: "Eldora Speedway, New Weston, OH",
+                    coords: "40.3195,-84.6331",
+                    weather: "Partly cloudy, 75°F",
+                    date: now.plus({days: 6}).toFormat("yyyy-MM-dd"),
+                    time: "7:30 PM ET",
+                    channel: "DIRTVision"
+                }
+            ]
+        };
+        
+        let races;
+        
+        if (thisWeekOnly) {
+            // Collect all races from this week across all series
+            const oneWeekFromNow = now.plus({ days: 7 });
+            races = [];
+            
+            Object.keys(allRaces).forEach(seriesKey => {
+                const seriesRaces = allRaces[seriesKey].filter(race => {
+                    const raceDate = DateTime.fromFormat(race.date, "yyyy-MM-dd");
+                    return raceDate >= now && raceDate <= oneWeekFromNow;
+                });
+                
+                // Add series information to each race
+                seriesRaces.forEach(race => {
+                    race.series = seriesKey;
+                    race.seriesName = seriesMap[seriesKey].name;
+                    race.headerClass = seriesMap[seriesKey].headerClass;
+                });
+                
+                races = [...races, ...seriesRaces];
+            });
+            
+            // Sort by date
+            races.sort((a, b) => {
+                return DateTime.fromFormat(a.date, "yyyy-MM-dd").

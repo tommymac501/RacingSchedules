@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Racing Hub - Ultimate Racing Schedule Tracker</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.0/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/3.4.3/luxon.min.js"></script>
+    <style>
+        :root {
+            --primary: #e10600;
+            --secondary: #1e2022;
+            --accent: #00a6ed;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #28a745;
+            --nascar-color: #ffd659;
+            --indycar-color: #00a6ed;
+            --f1-color: #e10600;
+            --outlaws-color: #1a1a1a;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background-color: var(--secondary);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo span {
+            color: var(--primary);
+        }
+        
+        .logo-icon {
+            margin-right: 10px;
+            font-size: 2rem;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: var(--primary);
+        }
+        
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/api/placeholder/1200/500') center/cover no-repeat;
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+        }
+        
+        .racing-series-container {
+            padding: 40px 0;
+        }
+        
+        .racing-series-container h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .racing-series-container h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary);
+        }
+        
+        .racing-series-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .series-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .series-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .series-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        
+        .series-card-content {
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .series-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+        
+        .series-card p {
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+        
+        .series-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--accent);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .nascar-badge {
+            background-color: var(--nascar-color);
+            color: black;
+        }
+        
+        .indycar-badge {
+            background-color: var(--indycar-color);
+        }
+        
+        .f1-badge {
+            background-color: var(--f1-color);
+        }
+        
+        .outlaws-badge {
+            background-color: var(--outlaws-color);
+        }
+        
+        #raceSchedule {
+            padding: 40px 0;
+            display: none;
+        }
+        
+        .schedule-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        
+        .schedule-header h2 {
+            font-size: 2rem;
+        }
+        
+        .back-button {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .back-button:hover {
+            background-color: var(--dark);
+        }
+        
+        .race-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+        
+        .race-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .race-card-header {
+            color: white;
+            padding: 15px;
+        }
+        
+        .nascar-header {
+            background-color: var(--nascar-color);
+            color: black;
+        }
+        
+        .indycar-header {
+            background-color: var(--indycar-color);
+        }
+        
+        .f1-header {
+            background-color: var(--f1-color);
+        }
+        
+        .outlaws-header {
+            background-color: var(--outlaws-color);
+        }
+        
+        .race-card-header h3 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+        
+        .race-card-content {
+            padding: 20px;
+        }
+        
+        .race-info {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 10px 15px;
+            margin-bottom: 15px;
+        }
+        
+        .race-info-label {
+            font-weight: 600;
+            color: var(--secondary);
+        }
+        
+        .race-info a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        
+        .race-info a:hover {
+            text-decoration: underline;
+        }
+        
+        .race-times {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        
+        .race-times h4 {
+            color: var(--success);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .loader {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .no-races {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2rem;
+            color: #6c757d;
+        }
+        
+        footer {
+            background-color: var(--secondary);
+            color: white;
+            padding: 30px 0;
+            margin-top: 40px;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .footer-logo span {
+            color: var(--primary);
+        }
+        
+        .footer-links h3 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .footer-links h3::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background-color: var(--primary);
+        }
+        
+        .footer-links ul {
+            list-style: none;
+        }
+        
+        .footer-links a {
+            color: #adb5bd;
+            text-decoration: none;
+            transition: color 0.3s;
+            display: block;
+            margin-bottom: 8px;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #343a40;
+            color: #adb5bd;
+        }
+        
+        @media (max-width: 768px) {
+            .racing-series-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+            
+            .race-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            header .container {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="#" class="logo">
+                <span class="logo-icon">🏁</span>
+                Racing<span>Hub</span>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="#" id="homeLink">Home</a></li>
+                    <li><a href="#" id="thisWeekLink">This Week</a></li>
+                    <li><a href="#" id="aboutLink">About</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Your Ultimate Racing Schedule Tracker</h1>
+            <p>Stay up-to-date with all your favorite racing series. Never miss a green flag again!</p>
+        </div>
+    </section>
+
+    <section class="racing-series-container">
+        <div class="container">
+            <h2>Select Your Racing Series</h2>
+            <div class="racing-series-grid" id="seriesGrid">
+                <!-- NASCAR Cup Series -->
+                <div class="series-card" data-series="nascar-cup">
+                    <img src="/api/placeholder/300/150" alt="NASCAR Cup Series">
+                    <div class="series-badge nascar-badge">NASCAR</div>
+                    <div class="series-card-content">
+                        <h3>NASCAR Cup Series</h3>
+                        <p>Premier stock car racing championship in the United States</p>
+                    </div>
+                </div>
+
+                <!-- NASCAR Xfinity Series -->
+                <div class="series-card" data-series="nascar-xfinity">
+                    <img src="/api/placeholder/300/150" alt="NASCAR Xfinity Series">
+                    <div class="series-badge nascar-badge">NASCAR</div>
+                    <div class="series-card-content">
+                        <h3>NASCAR Xfinity Series</h3>
+                        <p>The proving ground for NASCAR's future stars</p>
+                    </div>
+                </div>
+
+                <!-- NASCAR Truck Series -->
+                <div class="series-card" data-series="nascar-truck">
+                    <img src="/api/placeholder/300/150" alt="NASCAR Truck Series">
+                    <div class="series-badge nascar-badge">NASCAR</div>
+                    <div class="series-card-content">
+                        <h3>NASCAR Truck Series</h3>
+                        <p>Intense racing with modified production pickup trucks</p>
+                    </div>
+                </div>
+
+                <!-- ARCA Series -->
+                <div class="series-card" data-series="arca">
+                    <img src="/api/placeholder/300/150" alt="ARCA Series">
+                    <div class="series-badge nascar-badge">ARCA</div>
+                    <div class="series-card-content">
+                        <h3>ARCA Menards Series</h3>
+                        <p>Development series for aspiring NASCAR drivers</p>
+                    </div>
+                </div>
+
+                <!-- IndyCar Series -->
+                <div class="series-card" data-series="indycar">
+                    <img src="/api/placeholder/300/150" alt="IndyCar Series">
+                    <div class="series-badge indycar-badge">INDYCAR</div>
+                    <div class="series-card-content">
+                        <h3>IndyCar Series</h3>
+                        <p>Premier open-wheel racing series in North America</p>
+                    </div>
+                </div>
+
+                <!-- Formula 1 -->
+                <div class="series-card" data-series="f1">
+                    <img src="/api/placeholder/300/150" alt="Formula 1">
+                    <div class="series-badge f1-badge">F1</div>
+                    <div class="series-card-content">
+                        <h3>Formula 1</h3>
+                        <p>The pinnacle of motorsport worldwide</p>
+                    </div>
+                </div>
+
+                <!-- World of Outlaws -->
+                <div class="series-card" data-series="world-of-outlaws">
+                    <img src="/api/placeholder/300/150" alt="World of Outlaws">
+                    <div class="series-badge outlaws-badge">WoO</div>
+                    <div class="series-card-content">
+                        <h3>World of Outlaws</h3>
+                        <p>Premier dirt track racing series in the United States</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="raceSchedule" class="container">
+        <div class="schedule-header">
+            <h2 id="scheduleTitle">Race Schedule</h2>
+            <button class="back-button" id="backButton">
+                ← Back to Series
+            </button>
+        </div>
+        <div id="scheduleContent">
+            <div class="loader">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <div class="footer-logo">Racing<span>Hub</span></div>
+                    <p>Your one-stop destination for all racing schedules and information across multiple series.</p>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">This Week's Races</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Racing Series</h3>
+                    <ul>
+                        <li><a href="#">NASCAR</a></li>
+                        <li><a href="#">IndyCar</a></li>
+                        <li><a href="#">Formula 1</a></li>
+                        <li><a href="#">World of Outlaws</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 RacingHub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Global variables
+        const API_KEY = "xai-cPmFr2q8eiK8KoU7C39ZPcYTGFSntUttUWaksU0DHiuxHp7xhw1O7gzHkMjh5UdH9yxRZIvsVRQL1Ev1";
+        const DateTime = luxon.DateTime;
+        let currentSeries = '';
+        let isWeeklyView = false;
+        
+        // DOM Elements
+        const seriesGrid = document.getElementById('seriesGrid');
+        const raceSchedule = document.getElementById('raceSchedule');
+        const scheduleContent = document.getElementById('scheduleContent');
+        const scheduleTitle = document.getElementById('scheduleTitle');
+        const backButton = document.getElementById('backButton');
+        const homeLink = document.getElementById('homeLink');
+        const thisWeekLink = document.getElementById('thisWeekLink');
+        
+        // Map series IDs to full names and color classes
+        const seriesMap = {
+            'nascar-cup': {
+                name: 'NASCAR Cup Series',
+                headerClass: 'nascar-header',
+                color: 'var(--nascar-color)'
+            },
+            'nascar-xfinity': {
+                name: 'NASCAR Xfinity Series',
+                headerClass: 'nascar-header',
+                color: 'var(--nascar-color)'
+            },
+            'nascar-truck': {
+                name: 'NASCAR Truck Series',
+                headerClass: 'nascar-header',
+                color: 'var(--nascar-color)'
+            },
+            'arca': {
+                name: 'ARCA Menards Series',
+                headerClass: 'nascar-header',
+                color: 'var(--nascar-color)'
+            },
+            'indycar': {
+                name: 'IndyCar Series',
+                headerClass: 'indycar-header',
+                color: 'var(--indycar-color)'
+            },
+            'f1': {
+                name: 'Formula 1',
+                headerClass: 'f1-header',
+                color: 'var(--f1-color)'
+            },
+            'world-of-outlaws': {
+                name: 'World of Outlaws',
+                headerClass: 'outlaws-header',
+                color: 'var(--outlaws-color)'
+            }
+        };
+        
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            // Series card click events
+            const seriesCards = document.querySelectorAll('.series-card');
+            seriesCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const seriesId = card.dataset.series;
+                    fetchRaceSchedule(seriesId, false);
+                });
+            });
+            
+            // Back button event
+            backButton.addEventListener('click', () => {
+                showSeriesGrid();
+            });
+            
+            // Home link event
+            homeLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                showSeriesGrid();
+            });
+            
+            // This Week link event
+            thisWeekLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                fetchThisWeekRaces();
+            });
+        });
+        
+        // Show series grid and hide schedule
+        function showSeriesGrid() {
+            seriesGrid.parentElement.parentElement.style.display = 'block';
+            raceSchedule.style.display = 'none';
+        }
+        
+        // Show schedule and hide series grid
+        function showSchedule() {
+            seriesGrid.parentElement.parentElement.style.display = 'none';
+            raceSchedule.style.display = 'block';
+        }
+        
+        // Mock AI function to get race data (in a real app, this would call your xAI backend)
+        async function fetchRaceData(series, thisWeekOnly = false) {
+            try {
+                // This is where you would make an actual API call to your AI backend
+                // For now, we'll simulate a response with mock data
+                
+                // Simulate API delay
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Current date for comparison
+                const now = DateTime.now();
+                
+                // Mock race data
+                const allRaces = {
+                    'nascar-cup': [
+                        {
+                            name: "Coca-Cola 600",
+                            location: "Charlotte Motor Speedway, North Carolina",
+                            coords: "35.3522,-80.6831",
+                            weather: "Partly cloudy, 75°F",
+                            date: now.plus({days: 5}).toFormat("yyyy-MM-dd"),
+                            time: "6:00 PM ET",
+                            channel: "FOX"
+                        },
+                        {
+                            name: "Enjoy Illinois 300",
+                            location: "World Wide Technology Raceway, Madison, IL",
+                            coords: "38.6506,-90.1367",
+                            weather: "Sunny, 82°F",
+                            date: now.plus({days: 12}).toFormat("yyyy-MM-dd"),
+                            time: "3:30 PM ET",
+                            channel: "FS1"
+                        },
+                        {
+                            name: "Toyota/Save Mart 350",
+                            location: "Sonoma Raceway, California",
+                            coords: "38.1610,-122.4547",
+                            weather: "Clear, 68°F",
+                            date: now.plus({days: 19}).toFormat("yyyy-MM-dd"),
+                            time: "4:00 PM ET",
+                            channel: "FOX"
+                        }
+                    ],
+                    'nascar-xfinity': [
+                        {
+                            name: "Alsco Uniforms 300",
+                            location: "Charlotte Motor Speedway, North Carolina",
+                            coords: "35.3522,-80.6831",
+                            weather: "Scattered clouds, 73°F",
+                            date: now.plus({days: 4}).toFormat("yyyy-MM-dd"),
+                            time: "1:00 PM ET",
+                            channel: "FS1"
+                        },
+                        {
+                            name: "Pacific Office Automation 147",
+                            location: "Portland International Raceway, Oregon",
+                            coords: "45.5967,-122.6874",
+                            weather: "Light rain, 62°F",
+                            date: now.plus({days: 11}).toFormat("yyyy-MM-dd"),
+                            time: "4:30 PM ET",
+                            channel: "FS1"
+                        }
+                    ],
+                    'nascar-truck': [
+                        {
+                            name: "North Carolina Education Lottery 200",
+                            location: "Charlotte Motor Speedway, North Carolina",
+                            coords: "35.3522,-80.6831",
+                            weather: "Clear, 70°F",
+                            date: now.plus({days: 3}).toFormat("yyyy-MM-dd"),
+                            time: "8:30 PM ET",
+                            channel: "FS1"
+                        },
+                        {
+                            name: "Toyota 200",
+                            location: "World Wide Technology Raceway, Madison, IL",
+                            coords: "38.6506,-90.1367",
+                            weather: "Partly cloudy, 80°F",
+                            date: now.plus({days: 11}).toFormat("yyyy-MM-dd"),
+                            time: "1:30 PM ET",
+                            channel: "FS1"
+                        }
+                    ],
+                    'arca': [
+                        {
+                            name: "General Tire 150",
+                            location: "Charlotte Motor Speedway, North Carolina",
+                            coords: "35.3522,-80.6831",
+                            weather: "Clear, 68°F",
+                            date: now.plus({days: 3}).toFormat("yyyy-MM-dd"),
+                            time: "6:00 PM ET",
+                            channel: "FS1"
+                        },
+                        {
+                            name: "Dutch Boy 150",
+                            location: "Illinois State Fairgrounds, Springfield, IL",
+                            coords: "39.8275,-89.6442",
+                            weather: "Sunny, 79°F",
+                            date: now.plus({days: 26}).toFormat("yyyy-MM-dd"),
+                            time: "2:00 PM ET",
+                            channel: "FS1"
+                        }
+                    ],
+                    'indycar': [
+                        {
+                            name: "107th Indianapolis 500",
+                            location: "Indianapolis Motor Speedway, Indiana",
+                            coords: "39.7903,-86.2394",
+                            weather: "Partly cloudy, 77°F",
+                            date: now.plus({days: 4}).toFormat("yyyy-MM-dd"),
+                            time: "12:45 PM ET",
+                            channel: "NBC"
+                        },
+                        {
+                            name: "Detroit Grand Prix",
+                            location: "Detroit Street Circuit, Michigan",
+                            coords: "42.3314,-83.0458",
+                            weather: "Sunny, 75°F",
+                            date: now.plus({days: 11}).toFormat("yyyy-MM-dd"),
+                            time: "3:00 PM ET",
+                            channel: "USA Network"
+                        }
+                    ],
+                    'f1': [
+                        {
+                            name: "Monaco Grand Prix",
+                            location: "Circuit de Monaco, Monte Carlo",
+                            coords: "43.7347,7.4206",
+                            weather: "Clear, 70°F",
+                            date: now.plus({days: 4}).toFormat("yyyy-MM-dd"),
+                            time: "9:00 AM ET",
+                            channel: "ESPN"
+                        },
+                        {
+                            name: "Canadian Grand Prix",
+                            location: "Circuit Gilles Villeneuve, Montreal",
+                            coords: "45.5017,-73.5291",
+                            weather: "Cloudy, 65°F",
+                            date: now.plus({days: 18}).toFormat("yyyy-MM-dd"),
+                            time: "2:00 PM ET",
+                            channel: "ABC"
+                        }
+                    ],
+                    'world-of-outlaws': [
+                        {
+                            name: "World of Outlaws at Atomic Speedway",
+                            location: "Atomic Speedway, Chillicothe, OH",
+                            coords: "39.1836,-83.0029",
+                            weather: "Clear, 72°F",
+                            date: now.plus({days: 3}).toFormat("yyyy-MM-dd"),
+                            time: "7:00 PM ET",
+                            channel: "DIRTVision"
+                        },
+                        {
+                            name: "World of Outlaws at Eldora Speedway",
+                            location: "Eldora Speedway, New Weston, OH",
+                            coords: "40.3195,-84.6331",
+                            weather: "Partly cloudy, 75°F",
+                            date: now.plus({days: 6}).toFormat("yyyy-MM-dd"),
+                            time: "7:30 PM ET",
+                            channel: "DIRTVision"
+                        }
+                    ]
+                };
+                
+                let races;
+                
+                if (thisWeekOnly) {
+                    // Collect all races from this week across all series
+                    const oneWeekFromNow = now.plus({ days: 7 });
+                    races = [];
+                    
+                    Object.keys(allRaces).forEach(seriesKey => {
+                        const seriesRaces = allRaces[seriesKey].filter(race => {
+                            const raceDate = DateTime.fromFormat(race.date, "yyyy-MM-dd");
+                            return raceDate >= now && raceDate <= oneWeekFromNow;
+                        });
+                        
+                        // Add series information to each race
+                        seriesRaces.forEach(race => {
+                            race.series = seriesKey;
+                            race.seriesName = seriesMap[seriesKey].name;
+                            race.headerClass = seriesMap[seriesKey].headerClass;
+                        });
+                        
+                        races = [...races, ...seriesRaces];
+                    });
+                    
+                    // Sort by date
+                    races.sort((a, b) => {
+                        return DateTime.fromFormat(a.date, "yyyy-MM-dd").valueOf() - 
+                               DateTime.fromFormat(b.date, "yyyy-MM-dd").valueOf();
+                    });
+                } else {
+                    // Get races for the specified series
+                    races = allRaces[series];
+                }
+                
+                return races;
+            } catch (error) {
+                console.error("Error fetching race data:", error);
+                return [];
+            }
+        }
+        
+        // Format race date in user's local timezone
+        function formatRaceDateTime(dateStr, timeStr) {
+            // Parse the race date and time
+            // Assume timeStr is in ET format like "7:00 PM ET"
+            const [time, period, zone] = timeStr.split(' ');
+            
+            // Create a DateTime in ET
+            const raceDate = DateTime.fromFormat(`${dateStr} ${time} ${period}`, "yyyy-MM-dd h:mm a", {
+                zone: "America/New_York" // ET timezone
+            });
+            
+            // Convert to user's local time
+            const localRaceDate = raceDate.toLocal();
+            
+            // Format the date for display
+            const formattedDate = localRaceDate.toFormat("EEE, MMM d, yyyy");
+            const formattedTime = localRaceDate.toFormat("h:mm a");
+            
+            return {
+                date: formattedDate,
+                time: formattedTime,
+                fullDateTime: localRaceDate
+            };
+        }
+        
+        // Fetch race schedule for a specific series
+        async function fetchRaceSchedule(series, isWeekly = false) {
+            currentSeries = series;
+            isWeeklyView = isWeekly;
+            
+            // Show schedule section
+            showSchedule();
+            
+            // Set the schedule title
+            if (isWeekly) {
+                scheduleTitle.textContent = "This Week's Races";
+            } else {
+                scheduleTitle.textContent = seriesMap[series].name + " Schedule";
+            }
+            
+            // Show loading spinner
+            scheduleContent.innerHTML = `
+                <div class="loader">
+                    <div class="spinner"></div>
+                </div>
+            `;
+            
+            try {
+                // Fetch race data
+                const races = await fetchRaceData(series, isWeekly);
+                
+                // Display race data
+                displayRaceSchedule(races, isWeekly);
+            } catch (error) {
+                console.error("Error:", error);
+                scheduleContent.innerHTML = `
+                    <div class="no-races">
+                        <p>Sorry, there was an error fetching the race schedule. Please try again later.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Fetch races for this week across all series
+        async function fetchThisWeekRaces() {
+            fetchRaceSchedule('', true);
+        }
+        
+        // Display race schedule
+        function displayRaceSchedule(races, isWeekly = false) {
+            if (races.length === 0) {
+                scheduleContent.innerHTML = `
+                    <div class="no-races">
+                        <p>No upcoming races scheduled at this time.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Create HTML for race cards
+            let raceCardsHTML = '<div class="race-cards">';
+            
+            races.forEach(race => {
+                // Get local date and time
+                const localDateTime = formatRaceDateTime(race.date, race.time);
+                
+                // Determine header class
+                const headerClass = isWeekly ? race.headerClass : seriesMap[currentSeries].headerClass;
+                
+                raceCardsHTML += `
+                    <div class="race-card">
+                        <div class="race-card-header ${headerClass}">
+                            <h3>${race.name}</h3>
+                            ${isWeekly ? `<p>${race.seriesName}</p>` : ''}
+                        </div>
+                        <div class="race-card-content">
+                            <div class="race-info">
+                                <div class="race-info-label">Location:</div>
+                                <div>
+                                    <a href="https://www.google.com/maps?q=${race.coords}" target="_blank">
+                                        ${race.location} 📍
+                                    </a>
+                                </div>
+                                
+                                <div class="race-info-label">Weather:</div>
+                                <div>${race.weather}</div>
+                                
+                                <div class="race-info-label">Date:</div>
+                                <div>${localDateTime.date}</div>
+                                
+                                <div class="race-info-label">Green Flag:</div>
+                                <div>${localDateTime.time}</div>
+                                
+                                <div class="race-info-label">Watch On:</div>
+                                <div>${race.channel}</div>
+                            </div>
+                            
+                            <div class="race-times">
+                                <h4>RACE TIMES</h4>
+                                <div class="race-info">
+                                    <div class="race-info-label">Your Local Time:</div>
+                                    <div>${localDateTime.time}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            raceCardsHTML += '</div>';
+            
+            // Update the schedule content
+            scheduleContent.innerHTML = raceCardsHTML;
+        }
+    </script>
+</body>
+</html>
