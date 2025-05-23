@@ -1,7 +1,7 @@
 import { InsertRace } from "../../shared/schema";
 import axios from "axios";
 
-const SPORTSRADAR_API_KEY = "m1zNopiN891j2sKKcNMjujWc0wP9cSfl0tTnIojQ";
+const SPORTSRADAR_API_KEY = process.env.SPORTSRADAR_API_KEY;
 const SPORTSRADAR_BASE_URL = "https://api.sportradar.com/nascar-ot3";
 
 interface SportsRadarTrack {
