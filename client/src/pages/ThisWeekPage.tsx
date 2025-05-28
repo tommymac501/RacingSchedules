@@ -3,7 +3,7 @@ import RaceSchedule from "@/components/RaceSchedule";
 
 const ThisWeekPage = () => {
   useEffect(() => {
-    document.title = "This Week's Races - Racing Hub";
+    document.title = "This Week's Races - RaceTimes";
   }, []);
 
   return (

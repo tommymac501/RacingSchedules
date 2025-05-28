@@ -8,7 +8,7 @@ const Header = () => {
       <div className="container-racing py-3 flex flex-col sm:flex-row justify-between items-center">
         <Link href="/" className="logo flex items-center text-2xl font-bold text-white no-underline mb-3 sm:mb-0">
           <span className="mr-2 text-3xl">🏁</span>
-          Racing<span className="text-primary">Hub</span>
+          Race<span className="text-primary">Times</span>
         </Link>
         <nav>
           <ul className="flex space-x-6">

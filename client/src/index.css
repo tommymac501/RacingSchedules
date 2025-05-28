@@ -32,6 +32,19 @@
   --radius: 0.5rem;
 }
 
+/* 3D Card Flip Animation */
+.transform-style-preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
 .dark {
   --background: 240 10% 3.9%;
   --foreground: 0 0% 98%;
@@ -101,6 +114,10 @@
   
   .f1-badge {
     @apply bg-[#e10600] text-white;
+  }
+  
+  .motogp-badge {
+    @apply bg-[#ff6900] text-white;
   }
   
   .outlaws-badge {

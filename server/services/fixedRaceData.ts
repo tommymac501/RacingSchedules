@@ -15,7 +15,20 @@ export const getCupSeriesRaces = (): InsertRace[] => {
       practiceTimes: "Fri, 4:00 PM ET",
       qualifyingTimes: "Sat, 1:00 PM ET",
       seriesName: "Cup Series",
-      headerClass: "nascar-header"
+      headerClass: "nascar-header",
+      raceData: {
+        name: "Memorial Day 600",
+        number: 12,
+        distance: 600,
+        laps: 400,
+        chase_race: "Yes",
+        stage_1_laps: 100,
+        stage_2_laps: 100,
+        stage_3_laps: 200,
+        qualifying_start_time: "Saturday 1:00 PM ET",
+        broadcast: "Amazon Prime",
+        prior_winner: "Kyle Larson"
+      }
     },
     {
       seriesId: "stock-cup",
@@ -304,6 +317,54 @@ export const getIndyCarRaces = (): InsertRace[] => {
       qualifyingTimes: "Sat, 12:45 PM ET",
       seriesName: "IndyCar Series",
       headerClass: "indycar-header"
+    }
+  ];
+};
+
+// Fixed race data for MotoGP Series
+export const getMotoGPRaces = (): InsertRace[] => {
+  return [
+    {
+      seriesId: "motogp",
+      name: "Qatar Grand Prix",
+      location: "Losail International Circuit, Lusail, Qatar",
+      coords: "25.4900,51.4533",
+      weather: "Clear, 28°C",
+      date: "2025-03-09",
+      time: "3:00 PM QT",
+      channel: "Coming Soon",
+      practiceTimes: "Fri, 10:30 AM QT",
+      qualifyingTimes: "Sat, 3:00 PM QT",
+      seriesName: "MotoGP",
+      headerClass: "motogp-header"
+    },
+    {
+      seriesId: "motogp",
+      name: "Portuguese Grand Prix",
+      location: "Algarve International Circuit, Portimão, Portugal",
+      coords: "37.2319,-8.6267",
+      weather: "Partly cloudy, 22°C",
+      date: "2025-03-23",
+      time: "2:00 PM WET",
+      channel: "Coming Soon",
+      practiceTimes: "Fri, 9:55 AM WET",
+      qualifyingTimes: "Sat, 2:00 PM WET",
+      seriesName: "MotoGP",
+      headerClass: "motogp-header"
+    },
+    {
+      seriesId: "motogp",
+      name: "Spanish Grand Prix",
+      location: "Circuito de Jerez, Jerez de la Frontera, Spain",
+      coords: "36.7083,-6.0336",
+      weather: "Sunny, 25°C",
+      date: "2025-04-27",
+      time: "2:00 PM CEST",
+      channel: "Coming Soon",
+      practiceTimes: "Fri, 9:45 AM CEST",
+      qualifyingTimes: "Sat, 2:00 PM CEST",
+      seriesName: "MotoGP",
+      headerClass: "motogp-header"
     }
   ];
 };

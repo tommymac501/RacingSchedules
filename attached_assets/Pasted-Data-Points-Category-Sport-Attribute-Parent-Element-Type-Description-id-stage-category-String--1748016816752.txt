@@ -1,0 +1,68 @@
+Data Points
+
+Category & Sport:
+Attribute	Parent Element	Type	Description
+id	stage - category	String	Unique category ID for a stage
+ex. sr:category:36 (Formula 1)
+name	stage - category	String	Name for a stage's category
+ex. Formula 1
+id	stage - sport	String	Unique sport ID for a stage
+ex. sr:sport:40
+name	stage - sport	String	Name for a stage's sport
+ex. Formula 1
+Stage:
+Stage may be a sport, season, event, practice, qualifying, qualifying_part, race, lap, or sprint_race
+Attribute	Parent Element	Type	Description
+air_temperature	stage	Integer	Temperature in degrees Celsius
+description	stage	String	Name of a stage
+ex. Monaco Grand Prix 2024, Practice 1, Race
+disabled	stage	Boolean	Signifies a stage has been disabled when true
+humidity	stage	Integer	Air humidity measurement
+id	stage	String	Unique ID of a stage
+ex. sr:stage:1111379
+laps	stage	Integer	Number of laps in a race
+laps_completed	stage	Integer	Number of laps completed in a race
+pit_open	stage	Boolean	Signifies the pit is open in a race when true
+scheduled	stage	date-time	Scheduled start time of a stage
+ex. 2024-07-28T13:00:00+00:00
+scheduled_end	stage	date-time	Scheduled end time of a stage
+ex. 2024-07-28T15:00:00+00:00
+single_event	stage	Boolean	Signifies a stage is a single event when true
+status	stage	String	Status of a stage. See our FAQ for a complete list of valid statuses.
+ex. Cancelled, Closed, Completed, Finished, Not Started
+substatus	stage	String	Substatus of a stage. See our FAQ for a complete list of valid statuses.
+ex. 2 hour rule, 75% rule, All laps completed, Last lap
+track_temperature	stage	Integer	Temperature on the track, in degrees Celsius
+type	stage	String	Stage type
+sport, season, event, practice, qualifying, qualifying_part, race, lap, sprint_race
+unique_stage_id	stage	String	Unique ID of a parent stage for an event. Can be used to synch the same event across seasons. For example, sr:stage_unique:897 will be the unique ID for all Saudi Arabian Grand Prix yearly events.
+ex. sr:stage_unique:897
+weather	stage	String	Weather for a stage event
+Cloudy, Lightly clouded, Low rainfall, Heavy rainfall, Sunny, Rainy
+Venue:
+Attribute	Parent Element	Type	Description
+capacity	venue	Integer	Capacity of a venue
+ex. 70000
+city	venue	String	City name of a venue
+ex. Monte Carlo
+coordinates	venue	String	Coordinates of a venue
+ex. 43.734722,7.420556
+country	venue	String	Country name of a venue
+ex. Monaco
+country_code	venue	String	Country code of a venue
+ex. MCO
+curves_left	venue	Integer	Number of left curves of a venue
+curves_right	venue	Integer	Number of right curves of a venue
+debut	venue	Integer	Debut year of a venue
+ex. 1950
+id	venue	String	Unique ID of a venue
+ex. sr:venue:1016
+laps	venue	Integer	Number of laps of a venue
+length	venue	Integer	Circuit length of a venue, in meters
+ex. 3337
+name	venue	String	Name of a venue
+ex. Circuit de Monaco
+timezone	venue	String	Timezone of a venue
+ex. Canada/Eastern
+url_official	venue	String	Official website of a venue
+ex. https://acm.mc/

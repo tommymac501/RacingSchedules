@@ -1,4 +1,5 @@
 import { useLocation } from "wouter";
+import flagImage from "@assets/flag-1645262_1280_1748188759618.jpg";
 
 const Hero = () => {
   const [, navigate] = useLocation();
@@ -11,18 +12,60 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative py-16 md:py-24 text-center text-white" id="hero-section">
+    <section className="relative py-16 md:py-24 text-center text-white bg-gradient-to-br from-gray-900 via-gray-800 to-black" id="hero-section">
       <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/70">
         <div 
-          className="absolute inset-0 bg-cover bg-center" 
+          className="absolute inset-0 bg-cover bg-center opacity-20" 
           style={{ 
-            backgroundImage: `url('https://pixabay.com/get/g97c3625d72347219ae2b2f7c722b413cdf10876254a438dc532b280b4729f248ea4c84c42ba0923d9c2ea39e59f3f92da24f2a0b56ec3d6edf58b10658840f61_1280.jpg')`,
-            filter: 'brightness(0.6)'
+            backgroundImage: `url(${flagImage})`
           }}
         />
       </div>
       <div className="container-racing relative">
-        <h1 className="text-4xl md:text-5xl font-bold mb-6 drop-shadow-lg">Your Ultimate Racing Schedule Tracker</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-6 drop-shadow-lg relative">
+          <div className="absolute inset-0 opacity-10 bg-no-repeat bg-center bg-contain" style={{
+            backgroundImage: `url("data:image/svg+xml,${encodeURIComponent(`
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120" fill="white">
+                <g>
+                  <!-- Left checkered flag -->
+                  <rect x="20" y="20" width="60" height="40" fill="white" stroke="white" stroke-width="2"/>
+                  <rect x="20" y="20" width="12" height="8" fill="black"/>
+                  <rect x="44" y="20" width="12" height="8" fill="black"/>
+                  <rect x="68" y="20" width="12" height="8" fill="black"/>
+                  <rect x="32" y="28" width="12" height="8" fill="black"/>
+                  <rect x="56" y="28" width="12" height="8" fill="black"/>
+                  <rect x="20" y="36" width="12" height="8" fill="black"/>
+                  <rect x="44" y="36" width="12" height="8" fill="black"/>
+                  <rect x="68" y="36" width="12" height="8" fill="black"/>
+                  <rect x="32" y="44" width="12" height="8" fill="black"/>
+                  <rect x="56" y="44" width="12" height="8" fill="black"/>
+                  <rect x="20" y="52" width="12" height="8" fill="black"/>
+                  <rect x="44" y="52" width="12" height="8" fill="black"/>
+                  <rect x="68" y="52" width="12" height="8" fill="black"/>
+                  <line x1="20" y1="20" x2="20" y2="80" stroke="white" stroke-width="3"/>
+                  
+                  <!-- Right checkered flag -->
+                  <rect x="120" y="30" width="60" height="40" fill="white" stroke="white" stroke-width="2"/>
+                  <rect x="120" y="30" width="12" height="8" fill="black"/>
+                  <rect x="144" y="30" width="12" height="8" fill="black"/>
+                  <rect x="168" y="30" width="12" height="8" fill="black"/>
+                  <rect x="132" y="38" width="12" height="8" fill="black"/>
+                  <rect x="156" y="38" width="12" height="8" fill="black"/>
+                  <rect x="120" y="46" width="12" height="8" fill="black"/>
+                  <rect x="144" y="46" width="12" height="8" fill="black"/>
+                  <rect x="168" y="46" width="12" height="8" fill="black"/>
+                  <rect x="132" y="54" width="12" height="8" fill="black"/>
+                  <rect x="156" y="54" width="12" height="8" fill="black"/>
+                  <rect x="120" y="62" width="12" height="8" fill="black"/>
+                  <rect x="144" y="62" width="12" height="8" fill="black"/>
+                  <rect x="168" y="62" width="12" height="8" fill="black"/>
+                  <line x1="120" y1="30" x2="120" y2="90" stroke="white" stroke-width="3"/>
+                </g>
+              </svg>
+            `)}")`
+          }}></div>
+          <span className="relative z-10">Your Ultimate Racing Schedule Tracker</span>
+        </h1>
         <p className="text-xl max-w-3xl mx-auto mb-8">Stay up-to-date with all your favorite racing series. Never miss a green flag again!</p>
         <button 
           onClick={handleExplore}

@@ -10,8 +10,8 @@ const SchedulePage = () => {
 
   useEffect(() => {
     document.title = seriesInfo 
-      ? `${seriesInfo.name} Schedule - Racing Hub`
-      : "Race Schedule - Racing Hub";
+      ? `${seriesInfo.name} Schedule - RaceTimes`
+      : "Race Schedule - RaceTimes";
   }, [seriesInfo]);
 
   return (

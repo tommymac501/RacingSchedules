@@ -1,4 +1,4 @@
-import { pgTable, text, serial, timestamp, varchar } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, timestamp, varchar, json } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -46,6 +46,7 @@ export const races = pgTable("races", {
   qualifyingTimes: varchar("qualifying_times", { length: 50 }),
   seriesName: varchar("series_name", { length: 100 }),
   headerClass: varchar("header_class", { length: 50 }),
+  raceData: json("race_data"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

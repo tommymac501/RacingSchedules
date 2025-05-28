@@ -5,7 +5,7 @@ import ThisWeekPreview from "@/components/ThisWeekPreview";
 
 const HomePage = () => {
   useEffect(() => {
-    document.title = "Racing Hub - Ultimate Racing Schedule Tracker";
+    document.title = "RaceTimes - Ultimate Racing Schedule Tracker";
   }, []);
 
   return (

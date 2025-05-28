@@ -2,6 +2,7 @@ import express, { type Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { getRacesBySeriesId, getAllRaces, getThisWeekRaces } from "./services/raceData";
+import { getRaceDetails, getTopThreeRacesThisWeek } from "./services/xaiService";
 import { Race } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -36,6 +37,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching race data:", error);
       return res.status(500).json({ message: "Failed to fetch race data" });
+    }
+  });
+
+  // Get race details from X.ai
+  apiRouter.post("/race-details", async (req, res) => {
+    try {
+      const { raceName } = req.body;
+      
+      if (!raceName) {
+        return res.status(400).json({ message: "Race name is required" });
+      }
+
+      const details = await getRaceDetails(raceName);
+      return res.json({ details });
+    } catch (error) {
+      console.error("Error fetching race details:", error);
+      return res.status(500).json({ message: "Failed to fetch race details" });
+    }
+  });
+
+  // Get top three races for the current week from X.ai
+  apiRouter.get("/top-three-races", async (req, res) => {
+    try {
+      const topRaces = await getTopThreeRacesThisWeek();
+      return res.json({ races: topRaces });
+    } catch (error) {
+      console.error("Error fetching top three races:", error);
+      return res.status(500).json({ message: "Failed to fetch top races" });
     }
   });
   

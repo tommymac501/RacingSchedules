@@ -11,6 +11,15 @@ export interface RacingSeries {
   imageSrc: string;
 }
 
+import cupSeriesImage from "@assets/image_1747920009014.png";
+import xfinitySeriesImage from "@assets/image_1747919610007.png";
+import truckSeriesImage from "@assets/image_1747919799820.png";
+import arcaSeriesImage from "@assets/image_1747919906097.png";
+import indycarSeriesImage from "@assets/image_1748007448124.png";
+import f1SeriesImage from "@assets/image_1748007994874.png";
+import motogpSeriesImage from "@assets/image_1748099160585.png";
+import outlawsSeriesImage from "@assets/image_1747919431358.png";
+
 export const racingSeries: RacingSeries[] = [
   {
     id: "stock-cup",
@@ -20,7 +29,7 @@ export const racingSeries: RacingSeries[] = [
     badgeClass: "nascar-badge",
     headerClass: "nascar-header",
     color: "#ffd659",
-    imageSrc: "/src/assets/cup_series.png"
+    imageSrc: cupSeriesImage
   },
   {
     id: "stock-nationwide",
@@ -30,7 +39,7 @@ export const racingSeries: RacingSeries[] = [
     badgeClass: "nascar-badge",
     headerClass: "nascar-header",
     color: "#ffd659",
-    imageSrc: "/src/assets/nationwide_series.png"
+    imageSrc: xfinitySeriesImage
   },
   {
     id: "stock-truck",
@@ -40,7 +49,7 @@ export const racingSeries: RacingSeries[] = [
     badgeClass: "nascar-badge",
     headerClass: "nascar-header",
     color: "#ffd659",
-    imageSrc: "/src/assets/truck_series.png"
+    imageSrc: truckSeriesImage
   },
   {
     id: "arca",
@@ -50,7 +59,7 @@ export const racingSeries: RacingSeries[] = [
     badgeClass: "nascar-badge",
     headerClass: "nascar-header",
     color: "#ffd659",
-    imageSrc: "/src/assets/arca_series.png"
+    imageSrc: arcaSeriesImage
   },
   {
     id: "indycar",
@@ -60,7 +69,7 @@ export const racingSeries: RacingSeries[] = [
     badgeClass: "indycar-badge",
     headerClass: "indycar-header",
     color: "#00a6ed",
-    imageSrc: "/src/assets/indycar_series.png"
+    imageSrc: indycarSeriesImage
   },
   {
     id: "f1",
@@ -70,7 +79,17 @@ export const racingSeries: RacingSeries[] = [
     badgeClass: "f1-badge",
     headerClass: "f1-header",
     color: "#e10600",
-    imageSrc: "/src/assets/f1_series.png"
+    imageSrc: f1SeriesImage
+  },
+  {
+    id: "motogp",
+    name: "MotoGP",
+    type: "MOTOGP",
+    description: "Premier motorcycle racing championship",
+    badgeClass: "motogp-badge",
+    headerClass: "motogp-header",
+    color: "#ff6900",
+    imageSrc: motogpSeriesImage
   },
   {
     id: "world-of-outlaws",
@@ -80,7 +99,7 @@ export const racingSeries: RacingSeries[] = [
     badgeClass: "outlaws-badge",
     headerClass: "outlaws-header",
     color: "#1a1a1a",
-    imageSrc: "/src/assets/world_of_outlaws.png"
+    imageSrc: outlawsSeriesImage
   }
 ];
 

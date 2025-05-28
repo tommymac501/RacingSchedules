@@ -161,6 +161,7 @@ export class MemStorage implements IStorage {
       qualifyingTimes: insertRace.qualifyingTimes || null,
       seriesName: insertRace.seriesName || null,
       headerClass: insertRace.headerClass || null,
+      raceData: insertRace.raceData || null,
       createdAt: now
     };
     this.races.set(id, race);

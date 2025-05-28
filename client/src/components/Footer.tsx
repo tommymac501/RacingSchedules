@@ -7,7 +7,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <div className="text-2xl font-bold mb-4">
-              Racing<span className="text-primary">Hub</span>
+              Race<span className="text-primary">Times</span>
             </div>
             <p className="text-gray-400 mb-4">Your one-stop destination for all racing schedules and information. Never miss another green flag!</p>
             <div className="flex space-x-4">

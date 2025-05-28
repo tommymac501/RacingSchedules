@@ -9,7 +9,8 @@ import {
   getARCARaces,
   getWorldOfOutlawsRaces,
   getF1Races,
-  getIndyCarRaces
+  getIndyCarRaces,
+  getMotoGPRaces
 } from "./fixedRaceData";
 
 /**
@@ -17,8 +18,8 @@ import {
  * Uses static race data only
  */
 export async function getRacesBySeriesId(seriesId: string): Promise<Race[]> {
-  // Return empty array for ARCA and World of Outlaws to show "Coming Soon"
-  if (seriesId === "arca" || seriesId === "world-of-outlaws") {
+  // Return empty array for ARCA, World of Outlaws, and MotoGP to show "Coming Soon"
+  if (seriesId === "arca" || seriesId === "world-of-outlaws" || seriesId === "motogp") {
     return [];
   }
 
@@ -187,6 +188,9 @@ async function loadStaticRaceData(seriesId: string): Promise<void> {
           break;
         case "indycar":
           raceData = getIndyCarRaces();
+          break;
+        case "motogp":
+          raceData = getMotoGPRaces();
           break;
         default:
           return; // No data for unknown series

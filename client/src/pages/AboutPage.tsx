@@ -2,24 +2,24 @@ import { useEffect } from "react";
 
 const AboutPage = () => {
   useEffect(() => {
-    document.title = "About - Racing Hub";
+    document.title = "About - RaceTimes";
   }, []);
 
   return (
     <section className="py-12 bg-white">
       <div className="container-racing">
-        <h1 className="text-4xl font-bold mb-8 text-center">About Racing Hub</h1>
+        <h1 className="text-4xl font-bold mb-8 text-center">About RaceTimes</h1>
         
         <div className="max-w-3xl mx-auto prose prose-lg">
           <p>
-            Welcome to Racing Hub, your ultimate destination for tracking racing schedules across
+            Welcome to RaceTimes, your ultimate destination for tracking racing schedules across
             multiple series. We're passionate about motorsports and created this platform to help
             fans never miss another green flag.
           </p>
           
           <h2>Our Mission</h2>
           <p>
-            Racing Hub aims to provide motorsports enthusiasts with a comprehensive, easy-to-use
+            RaceTimes aims to provide motorsports enthusiasts with a comprehensive, easy-to-use
             tool for tracking race schedules across NASCAR, IndyCar, Formula 1, and other racing series.
             We believe that fans should have all the information they need about upcoming races in one place.
           </p>
